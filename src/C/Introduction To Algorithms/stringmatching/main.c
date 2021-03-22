@@ -121,9 +121,57 @@ void test_finite_automation_match()
     finite_automation_match("aaaaa", "aaa");
 }
 
+void kmp_match(char *t, char *p)
+{
+    int n = strlen(t);
+    int m = strlen(p);
+    int pi[m];
+    pi[0] = -1;
+    int k = -1;
+    for (int q = 1; q < m; q++)
+    {
+        while (k >= 0 && p[k + 1] != p[q])
+        {
+            k = pi[k];
+        }
+        if (p[k + 1] == p[q])
+        {
+            k++;
+        }
+        pi[q] = k;
+    }
+
+    int q = -1;
+    for (int i = 0; i < n; i++)
+    {
+        while (q >= 0 && t[i] != p[q + 1])
+        {
+            q = pi[q];
+        }
+
+        if (t[i] == p[q + 1])
+        {
+            q++;
+        }
+        if (q == m - 1)
+        {
+            printf("match at %d\n", i - m + 1);
+            q = pi[q];
+        }
+    }
+}
+
+void test_kmp_match()
+{
+    kmp_match("bababaabcb", "ababaca");
+    kmp_match("bababacabc", "ababaca");
+    kmp_match("aaaaaa", "aaa");
+}
+
 int main()
 {
     test_rabin_karp_match();
     test_finite_automation_match();
+    test_kmp_match();
     return 0;
 }
